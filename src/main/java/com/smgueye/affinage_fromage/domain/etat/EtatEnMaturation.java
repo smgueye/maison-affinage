@@ -1,7 +1,7 @@
 package com.smgueye.affinage_fromage.domain.etat;
 
 import com.smgueye.affinage_fromage.common.exceptions.NotImplementedException;
-import com.smgueye.affinage_fromage.domain.Fromage;
+import com.smgueye.affinage_fromage.domain.fromage.Fromage;
 
 public class EtatEnMaturation implements Etat {
   @Override

@@ -14,22 +14,22 @@ public enum Famille {
   CHEVRE("chèvre"),
   BREBIS("Brebis");
 
-  private final String name;
+  private final String nom;
 
-  private static final Map<String, Famille> BY_NAME = Stream
+  private static final Map<String, Famille> PAR_NOM = Stream
     .of(values())
     .collect(Collectors.toUnmodifiableMap(
-      Famille::getName, Function.identity()));
+      Famille::nom, Function.identity()));
 
-  Famille(String name) {
-    this.name = name;
+  Famille(String nom) {
+    this.nom = nom;
   }
 
-  public String getName() {
-    return name;
+  public String nom() {
+    return nom;
   }
 
-  public static Optional<Famille> fromName(String name) {
-    return Optional.ofNullable(BY_NAME.get(name));
+  public static Optional<Famille> chercherParLeNom(String unNom) {
+    return Optional.ofNullable(PAR_NOM.get(unNom));
   }
 }

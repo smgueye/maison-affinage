@@ -8,6 +8,7 @@
 /**
 * Le metier devrait pouvoir lire les tests et comprendre ce qui se passe.
 * 
+* Commencer par le << Happy path >>
 * Pour les assertions, penser à les regrouper pour donner une signification globale de ce qu'on vérifie.
 * */
 public class CasUtilisationATesterTest {

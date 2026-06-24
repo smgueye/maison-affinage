@@ -12,7 +12,7 @@ public enum TypeIncident {
 
   private final String type;
 
-  public static final Map<String, TypeIncident> BY_TYPE = Arrays
+  public static final Map<String, TypeIncident> PAR_TYPE = Arrays
     .stream(TypeIncident.values())
     .collect(Collectors.toUnmodifiableMap(
       TypeIncident::getType, Function.identity()));
@@ -25,7 +25,7 @@ public enum TypeIncident {
     return type;
   }
 
-  public static Optional<TypeIncident> fromType(String typeName) {
-    return Optional.ofNullable(BY_TYPE.get(typeName));
+  public static Optional<TypeIncident> chercherParType(String unType) {
+    return Optional.ofNullable(PAR_TYPE.get(unType));
   }
 }

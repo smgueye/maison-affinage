@@ -1,7 +1,9 @@
-package com.smgueye.affinage_fromage.domain;
+package com.smgueye.affinage_fromage.domain.fromage;
 
 import com.smgueye.affinage_fromage.common.Entity;
 import com.smgueye.affinage_fromage.common.exceptions.NotImplementedException;
+import com.smgueye.affinage_fromage.domain.*;
+import com.smgueye.affinage_fromage.domain.cave.CaveAffinage;
 import com.smgueye.affinage_fromage.domain.etat.AucunEtat;
 import com.smgueye.affinage_fromage.domain.etat.Etat;
 import com.smgueye.affinage_fromage.domain.etat.EtatRecu;
@@ -20,69 +22,66 @@ public class Fromage extends Entity {
   private Poids poids;
   private LocalDate dateDeReception;
   @Getter private Etat etat;
-  private ArtisantId artisantId;
+  private ArtisanId artisanId;
   private CaveAffinage caveAffinage;
   private List<SoinAffinage> planAffinage = new ArrayList<>();;
   private List<SoinAffinage> soinsRealises = new ArrayList<>();;
   private List<Incident> incidents = new ArrayList<>();;
 
-  public Fromage(FromageId id, String name, Poids poids, LocalDate date, Famille famille, ArtisantId artisantId) {
+  public Fromage(FromageId id, String name, Poids poids, LocalDate date, Famille famille, ArtisanId artisanId) {
     this.setId(id);
     this.setName(name);
     this.setPoids(poids);
     this.setDateDeReception(date);
     this.setEtat(new AucunEtat());
     this.setFamille(famille);
-    this.setArtisantId(artisantId);
+    this.setArtisanId(artisanId);
   }
 
   protected void setId(FromageId fromageId) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNull(fromageId, "L'identifiant du fromage est requis.");
     this.id = fromageId;
   }
 
   protected void setName(String name) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNullNiVide(name, "Le nom du fromage est requis.");
     this.name = name;
   }
 
   protected void setPoids(Poids poids) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNull(poids, "Le poids du fromage est requis.");
     this.poids = poids;
   }
 
   protected void setDateDeReception(LocalDate dateDeReception) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNull(dateDeReception, "La date de reception du fromage est requise.");
     this.dateDeReception = dateDeReception;
   }
   
   protected void setEtat(Etat etat) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNull(etat, "Le état du fromage est requis.");
     this.etat = etat;
   }
   
   protected void setFamille(Famille famille) {
-    // TODO - Control : is attr clean ?
+    this.verifieArgumentNonNull(famille,  "La famille du fromage est requise.");
     this.famille = famille;
   }
 
-  protected void setArtisantId(ArtisantId artisantId) {
-    // TODO - Control : is attr clean ?
-    this.artisantId = artisantId;
+  protected void setArtisanId(ArtisanId artisanId) {
+    this.verifieArgumentNonNull(artisanId, "L'identifiant de l'artisan est requis.");
+    this.artisanId = artisanId;
   }
 
   public void placementEnCave(CaveAffinage caveAffinage) {
-    // TODO - Control : is attr clean ?
     throw new NotImplementedException();
   }
 
   public void maturation() {
-    // TODO - Control : is attr clean ?
     throw new NotImplementedException();
   }
 
   public float controlPoids() {
-    // TODO - Control : is attr clean ?
     throw new NotImplementedException();
   }
 
@@ -91,12 +90,10 @@ public class Fromage extends Entity {
   }
 
   public void bloquer() {
-    // TODO - Control : is attr clean ?
     throw new NotImplementedException();
   }
 
   public void pret() {
-    // TODO - Control : is attr clean ?
     throw new NotImplementedException();
   }
 
