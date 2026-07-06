@@ -1,15 +1,16 @@
 package com.smgueye.affinage_fromage.domain.cave;
 
+import com.smgueye.affinage_fromage.commun.ValueObject;
 import com.smgueye.affinage_fromage.domain.fromage.FromageId;
 import lombok.Getter;
 
 import java.util.UUID;
 
-public class CaveAffinageId {
-  private final UUID id;
+public class CaveAffinageId extends ValueObject {
+  private UUID id;
 
   public CaveAffinageId(UUID id) {
-    this.id = id;
+    setId(id);
   }
   
   public CaveAffinageId(CaveAffinageId caveAffinageId) {
@@ -18,6 +19,11 @@ public class CaveAffinageId {
   
   public UUID id() {
     return id;
+  }
+
+  private void setId(UUID id) {
+    this.verifieArgumentNonNull(id, "L'identifiant UUID de la cave est requis.");
+    this.id = id;
   }
 
   @Override

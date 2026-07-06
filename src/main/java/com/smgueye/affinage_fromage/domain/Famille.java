@@ -1,35 +1,60 @@
 package com.smgueye.affinage_fromage.domain;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
-public enum Famille {
-  PATE_MOLLE("Pâte molle"),
-  PATE_PRESSEE("Pâte pressée"),
-  BLEU("Bleu"),
-  CROUTE_LAVEE("Croûte lavée"),
-  CHEVRE("chèvre"),
-  BREBIS("Brebis");
+import java.util.List;
+import java.util.Objects;
 
-  private final String nom;
+public class Famille extends ValueObject {
+  private String nom;
+  private PlageAffinage plageAffinage;
+  private List<SoinAffinage> soinsObligatoires;
 
-  private static final Map<String, Famille> PAR_NOM = Stream
-    .of(values())
-    .collect(Collectors.toUnmodifiableMap(
-      Famille::nom, Function.identity()));
+  public Famille(String nom, PlageAffinage plageAffinage, List<SoinAffinage> soinsObligatoires) {
+    setNom(nom);
+    setPlageAffinage(plageAffinage);
+    setSoins(soinsObligatoires);
+  }
 
-  Famille(String nom) {
-    this.nom = nom;
+  public Famille(Famille famille) {
+    this(famille.nom(), famille.plageAffinage(), famille.soinsObligatoires());
   }
 
   public String nom() {
     return nom;
   }
 
-  public static Optional<Famille> chercherParLeNom(String unNom) {
-    return Optional.ofNullable(PAR_NOM.get(unNom));
+  public PlageAffinage plageAffinage() {
+    return plageAffinage;
+  }
+
+  public List<SoinAffinage> soinsObligatoires() {
+    return soinsObligatoires;
+  }
+
+  private void setNom(String nom) {
+    this.verifieArgumentNonNullNiVide(nom, "Le nom de la famille est requis.");
+    this.nom = nom;
+  }
+  
+  private void setSoins(List<SoinAffinage> soinsObligatoires) {
+    this.verifieArgumentListEstNonNullNiVide(soinsObligatoires, "La liste des soins a promulger doit etre fournis.");
+    this.soinsObligatoires = soinsObligatoires;
+  }
+
+  private void setPlageAffinage(PlageAffinage plageAffinage) {
+    this.verifieArgumentNonNull(plageAffinage, "La plage d'affinage de la famille est requise.");
+    this.plageAffinage = plageAffinage;
+  }
+  @Override
+  public boolean equals(Object unObjet) {
+    if (unObjet == this) return true;
+    if (unObjet == null) return false;
+    if (this.getClass() != unObjet.getClass()) return false;
+
+    Famille uneFamille = (Famille) unObjet;
+    return Objects.equals(nom, uneFamille.nom()) &&
+      plageAffinage.equals(uneFamille.plageAffinage()) &&
+      soinsObligatoires.equals(uneFamille.soinsObligatoires);
   }
 }

@@ -1,15 +1,19 @@
 package com.smgueye.affinage_fromage.domain.fromage;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 import java.util.UUID;
 
 public class FromageId extends ValueObject {
 
-  private final UUID id;
+  private UUID id;
 
   public FromageId(UUID id) {
+    setId(id);
+  }
+
+  private void setId(UUID id) {
+    this.verifieArgumentNonNull(id, "L'identifiant du fromage est requis.");
     this.id = id;
   }
 
