@@ -1,6 +1,6 @@
 package com.smgueye.affinage_fromage.domain.incident;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 public class Incident extends ValueObject {
   private final TypeIncident type;

@@ -1,4 +1,4 @@
-package com.smgueye.affinage_fromage.common.exceptions;
+package com.smgueye.affinage_fromage.commun.exceptions;
 
 public class NotImplementedException extends UnsupportedOperationException {
 

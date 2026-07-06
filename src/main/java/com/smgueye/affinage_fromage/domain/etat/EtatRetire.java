@@ -1,6 +1,6 @@
 package com.smgueye.affinage_fromage.domain.etat;
 
-import com.smgueye.affinage_fromage.common.exceptions.NotImplementedException;
+import com.smgueye.affinage_fromage.commun.exceptions.NotImplementedException;
 import com.smgueye.affinage_fromage.domain.fromage.Fromage;
 
 public class EtatRetire implements Etat {

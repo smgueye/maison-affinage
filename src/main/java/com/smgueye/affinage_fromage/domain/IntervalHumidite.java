@@ -1,30 +1,44 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
-import lombok.Getter;
-
-import java.util.UUID;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 public class IntervalHumidite extends ValueObject {
 
-  private final double minimum;
-  private final double maximum;
+  private double minimum;
+  private double maximum;
 
   public IntervalHumidite(double minimum, double maximum) {
-    this.minimum = minimum;
-    this.maximum = maximum;
+    if (minimum > maximum) {
+      throw new IllegalArgumentException("L'humidité minimale ne peut être supérieure a la temperature maximale.");
+    }
+    setMinimum(minimum);
+    setMaximum(maximum);
   }
 
   public IntervalHumidite(IntervalHumidite intervalHumidite) {
     this(intervalHumidite.minimum(), intervalHumidite.maximum());
   }
 
-  private double minimum() {
+  public double minimum() {
     return minimum;
   }
 
-  private double maximum() {
+  public double maximum() {
     return maximum;
+  }
+
+  public boolean neContientPas(double humiditeCible) {
+    return humiditeCible > maximum() || humiditeCible < minimum();
+  }
+
+  private void setMinimum(double leMinimum) {
+    this.verifieArgumentNonNull(leMinimum, "L'humidité minimale est requise.");
+    this.minimum = leMinimum;
+  }
+
+  private void setMaximum(double leMaximum) {
+    this.verifieArgumentNonNull(leMaximum, "L'humidité maximale est requise.");
+    this.maximum = leMaximum;
   }
 
   @Override

@@ -1,34 +1,40 @@
 package com.smgueye.affinage_fromage.domain.fromage;
 
-import com.smgueye.affinage_fromage.common.Entity;
-import com.smgueye.affinage_fromage.common.exceptions.NotImplementedException;
+import com.smgueye.affinage_fromage.commun.Entity;
+import com.smgueye.affinage_fromage.commun.exceptions.CapaciteMaximaleDepasseeException;
+import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecCaveException;
+import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecLaPeriodeDurantLePlacement;
 import com.smgueye.affinage_fromage.domain.*;
 import com.smgueye.affinage_fromage.domain.cave.CaveAffinage;
 import com.smgueye.affinage_fromage.domain.etat.AucunEtat;
 import com.smgueye.affinage_fromage.domain.etat.Etat;
+import com.smgueye.affinage_fromage.domain.etat.EtatEnMaturation;
 import com.smgueye.affinage_fromage.domain.etat.EtatRecu;
-import com.smgueye.affinage_fromage.domain.incident.Incident;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.domain.Famille;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.smgueye.affinage_fromage.commun.messages.Message.HUMIDITE_INCOMPATIBLE_AVEC_LA_CAVE;
+import static com.smgueye.affinage_fromage.commun.messages.Message.TEMPERATURE_INCOMPATIBLE_AVEC_LA_CAVE;
 
 public class Fromage extends Entity {
 
-  @Getter private FromageId id;
+  private FromageId id;
   private String name;
   private Famille famille;
   private Poids poids;
   private LocalDate dateDeReception;
-  @Getter private Etat etat;
+  private Etat etat;
   private ArtisanId artisanId;
   private CaveAffinage caveAffinage;
-  private List<SoinAffinage> planAffinage = new ArrayList<>();;
-  private List<SoinAffinage> soinsRealises = new ArrayList<>();;
-  private List<Incident> incidents = new ArrayList<>();;
+  private PeriodeDeMaturation periodeDeMaturation;
 
-  public Fromage(FromageId id, String name, Poids poids, LocalDate date, Famille famille, ArtisanId artisanId) {
+  public Fromage(FromageId id,
+                 String name,
+                 Poids poids,
+                 LocalDate date,
+                 Famille famille,
+                 ArtisanId artisanId) {
     this.setId(id);
     this.setName(name);
     this.setPoids(poids);
@@ -73,31 +79,112 @@ public class Fromage extends Entity {
     this.artisanId = artisanId;
   }
 
-  public void placementEnCave(CaveAffinage caveAffinage) {
-    throw new NotImplementedException();
+  public FromageId id() {
+    return id;
   }
 
-  public void maturation() {
-    throw new NotImplementedException();
+  public Etat etat() {
+    return etat;
   }
 
-  public float controlPoids() {
-    throw new NotImplementedException();
+  public ArtisanId artisanId() {
+    return artisanId;
   }
 
+  public String nom() {
+    return name;
+  }
+
+  public Poids poids() {
+    return poids;
+  }
+
+  public LocalDate dateReception() {
+    return dateDeReception;
+  }
+
+  public Famille famille() {
+    return famille;
+  }
+
+  public PeriodeDeMaturation periodeDeMaturation() {
+    return periodeDeMaturation;
+  }
+
+  public PlageAffinage plageAffinage() {
+    return this.famille.plageAffinage();
+  }
+
+  // TODO : Transaction
+  public void placeEnCave(CaveAffinage caveAffinage, PeriodeDeMaturation periodeDeMaturation)
+    throws CapaciteMaximaleDepasseeException, IncompatibiliteAvecCaveException {
+    this.verifierConditionsPourPlacerUnFromage(caveAffinage, periodeDeMaturation);
+
+    this.caveAffinage = caveAffinage;
+    this.periodeDeMaturation = periodeDeMaturation;
+    this.caveAffinage.place(this);
+    this.etat = new EtatEnMaturation();
+  }
+
+  // TODO -- Transaction
   public void recu() {
     this.etat = new EtatRecu();
   }
 
-  public void bloquer() {
-    throw new NotImplementedException();
-  }
-
-  public void pret() {
-    throw new NotImplementedException();
-  }
-
   public boolean estRecu() {
     return this.etat.getClass().equals(EtatRecu.class);
+  }
+
+  public boolean estEnMaturation() {
+    return  this.etat.getClass().equals(EtatEnMaturation.class);
+  }
+
+  public boolean estPlaceDansLaCave(CaveAffinage laCave) {
+    return this.caveAffinage.equals(laCave);
+  }
+
+  private void verifierConditionsPourPlacerUnFromage(CaveAffinage cave,
+                                                     PeriodeDeMaturation periodeDeMaturation)
+    throws CapaciteMaximaleDepasseeException, IncompatibiliteAvecCaveException {
+    if (laPeriodeEstIncompatible(cave, periodeDeMaturation))
+      throw new IncompatibiliteAvecLaPeriodeDurantLePlacement();
+
+    if (cave.estPleine(this.id()))
+      throw new CapaciteMaximaleDepasseeException();
+
+    PlageAffinage laPlageAffinage = plageAffinage();
+    IntervalHumidite intervalHumidite = laPlageAffinage.humidite();
+    if (intervalHumidite.neContientPas(cave.humiditeCible()))
+      throw new IncompatibiliteAvecCaveException(HUMIDITE_INCOMPATIBLE_AVEC_LA_CAVE);
+
+    IntervalTemperature intervalTemperature = laPlageAffinage.temperature();
+    if (intervalTemperature.neContientPas(cave.temperatureCible()))
+      throw new IncompatibiliteAvecCaveException(TEMPERATURE_INCOMPATIBLE_AVEC_LA_CAVE);
+  }
+
+  private boolean laPeriodeEstCompatible(CaveAffinage cave, PeriodeDeMaturation nouvellePeriode) {
+    if (periodeDeMaturation == null)
+      return true;
+
+    if (cave.accueillePasEncore(this.id()))
+      return true;
+
+    if (this.periodeDeMaturation.contient(nouvellePeriode))
+      return false;
+
+    return true;
+  }
+
+  private boolean laPeriodeEstIncompatible(CaveAffinage cave, PeriodeDeMaturation nouvellePeriode) {
+    return !laPeriodeEstCompatible(cave, nouvellePeriode);
+  }
+
+  @Override
+  public boolean equals(Object unObjet) {
+    if (unObjet == null) return false;
+    if (this == unObjet) return true;
+    if (this.getClass() != unObjet.getClass()) return false;
+
+    return id.equals(((Fromage) unObjet).id);
   }
 }

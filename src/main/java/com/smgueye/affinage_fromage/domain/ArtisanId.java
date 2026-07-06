@@ -1,6 +1,6 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 import java.util.UUID;
 
@@ -8,15 +8,19 @@ public class ArtisanId extends ValueObject {
   private UUID id;
 
   public ArtisanId(UUID id) {
-    this.id = id;
+    setId(id);
   }
 
   public ArtisanId(ArtisanId artisanId) {
     this(artisanId.id());
   }
 
-  private UUID id() {
+  public UUID id() {
     return id;
+  }
+
+  private void setId(UUID id) {
+    this.id = id;
   }
 
   @Override

@@ -1,27 +1,36 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 public class PlageAffinage extends ValueObject {
-  private final IntervalTemperature temperature;
-  private final IntervalHumidite humidite;
+  private IntervalTemperature temperature;
+  private IntervalHumidite humidite;
 
   public PlageAffinage(IntervalTemperature temperature, IntervalHumidite humidite) {
-    this.temperature = temperature;
-    this.humidite = humidite;
+    setTemperature(temperature);
+    setHumidite(humidite);
   }
 
   public PlageAffinage(PlageAffinage plageAffinage) {
     this(plageAffinage.temperature(), plageAffinage.humidite());
   }
 
-  private IntervalTemperature temperature() {
+  public IntervalTemperature temperature() {
     return temperature;
   }
 
-  private IntervalHumidite humidite() {
+  public IntervalHumidite humidite() {
     return humidite;
+  }
+
+  private void setHumidite(IntervalHumidite humidite) {
+    this.verifieArgumentNonNull(humidite, "L'humidité de la plage d'affinage est requise.");
+    this.humidite = humidite;
+  }
+
+  private void setTemperature(IntervalTemperature temperature) {
+    this.verifieArgumentNonNull(temperature, "La temperature de la plage d'affinage est requise.");
+    this.temperature = temperature;
   }
 
   public boolean equals(Object unObjet) {

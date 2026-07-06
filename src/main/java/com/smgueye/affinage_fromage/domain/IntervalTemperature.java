@@ -1,27 +1,39 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.common.ValueObject;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.commun.ValueObject;
 
 public class IntervalTemperature extends ValueObject {
-  private final double minimale;
-  private final double maximale;
+  private double minimale;
+  private double maximale;
 
   public IntervalTemperature(double minimale, double maximale) {
-    this.minimale = minimale;
-    this.maximale = maximale;
+    if (minimale > maximale) {
+      throw new IllegalArgumentException("La temperature minimale ne peut être supérieure a la temperature maximale.");
+    }
+    setMinimale(minimale);
+    setMaximale(maximale);
   }
 
   public IntervalTemperature(IntervalTemperature unIntervalDeTemperature) {
     this(unIntervalDeTemperature.minimale, unIntervalDeTemperature.maximale);
   }
 
-  private double minimale() {
+  public double minimale() {
     return minimale;
   }
 
-  private double maximale() {
+  public double maximale() {
     return maximale;
+  }
+
+  private void setMinimale(double leMinimum) {
+    this.verifieArgumentNonNull(leMinimum, "La température minimale est requise.");
+    this.minimale = leMinimum;
+  }
+
+  private void setMaximale(double leMaximum) {
+    this.verifieArgumentNonNull(leMaximum, "La température maximale est requise.");
+    this.maximale = leMaximum;
   }
 
   @Override
@@ -32,5 +44,9 @@ public class IntervalTemperature extends ValueObject {
     IntervalTemperature unIntervalDeTemperature = (IntervalTemperature) unObjet;
     return this.minimale == unIntervalDeTemperature.minimale() &&
       this.maximale == unIntervalDeTemperature.maximale();
+  }
+
+  public boolean neContientPas(double temperatureCible) {
+    return temperatureCible > maximale() || temperatureCible < minimale();
   }
 }
