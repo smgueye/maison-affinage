@@ -1,12 +1,10 @@
 package com.smgueye.affinage_fromage.domain.cave;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
-import com.smgueye.affinage_fromage.domain.fromage.FromageId;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
 import java.util.UUID;
 
-public class CaveAffinageId extends ValueObject {
+public class CaveAffinageId extends ObjetValeur {
   private UUID id;
 
   public CaveAffinageId(UUID id) {

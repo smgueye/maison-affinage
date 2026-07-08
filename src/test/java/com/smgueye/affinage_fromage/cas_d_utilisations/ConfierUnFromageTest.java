@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Chapitre 1 : Recevoir un fromage")
 public class ConfierUnFromageTest {
 
   @Test

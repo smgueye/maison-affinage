@@ -1,10 +1,10 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
 import java.util.UUID;
 
-public class ArtisanId extends ValueObject {
+public class ArtisanId extends ObjetValeur {
   private UUID id;
 
   public ArtisanId(UUID id) {

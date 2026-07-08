@@ -1,4 +1,4 @@
-package com.smgueye.affinage_fromage.domain;
+package com.smgueye.affinage_fromage.domain.soins;
 
 import java.util.Map;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum SoinAffinage {
+public enum TypeDeSoinAffinage {
   RETOURNEMENT("Retournement"),
   BROSSAGE("Brossage"),
   LAVAGE_CROUTE("Lavage de croûte"),
@@ -15,20 +15,20 @@ public enum SoinAffinage {
 
   private final String soin;
 
-  private static final Map<String, SoinAffinage> PAR_NOM_DU_SOIN = Stream
+  private static final Map<String, TypeDeSoinAffinage> PAR_NOM_DU_SOIN = Stream
     .of(values())
     .collect(Collectors.toUnmodifiableMap(
-      SoinAffinage::getSoin, Function.identity()));
+      TypeDeSoinAffinage::soin, Function.identity()));
 
-  SoinAffinage(String nomDuSoin) {
+  TypeDeSoinAffinage(String nomDuSoin) {
     soin = nomDuSoin;
   }
 
-  public String getSoin() {
+  public String soin() {
     return soin;
   }
 
-  public static Optional<SoinAffinage> fromSoin(String nomDuSoin) {
+  public static Optional<TypeDeSoinAffinage> aPartirDe(String nomDuSoin) {
     return Optional.ofNullable(PAR_NOM_DU_SOIN.get(nomDuSoin));
   }
 }

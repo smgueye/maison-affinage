@@ -1,9 +1,8 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
-import lombok.Getter;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
-public class Poids extends ValueObject {
+public class Poids extends ObjetValeur {
   private final double poids;
 
   public Poids(double poids) {

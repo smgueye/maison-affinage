@@ -1,6 +1,6 @@
 package com.smgueye.affinage_fromage.domain.fromage;
 
-import com.smgueye.affinage_fromage.commun.Entity;
+import com.smgueye.affinage_fromage.commun.Entite;
 import com.smgueye.affinage_fromage.commun.exceptions.CapaciteMaximaleDepasseeException;
 import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecCaveException;
 import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecLaPeriodeDurantLePlacement;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import static com.smgueye.affinage_fromage.commun.messages.Message.HUMIDITE_INCOMPATIBLE_AVEC_LA_CAVE;
 import static com.smgueye.affinage_fromage.commun.messages.Message.TEMPERATURE_INCOMPATIBLE_AVEC_LA_CAVE;
 
-public class Fromage extends Entity {
+public class Fromage extends Entite {
 
   private FromageId id;
   private String name;
@@ -166,10 +166,7 @@ public class Fromage extends Entity {
     if (periodeDeMaturation == null)
       return true;
 
-    if (cave.accueillePasEncore(this.id()))
-      return true;
-
-    if (this.periodeDeMaturation.contient(nouvellePeriode))
+    if (this.periodeDeMaturation.chevauche(nouvellePeriode))
       return false;
 
     return true;

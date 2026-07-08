@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
-public class IntervalTemperature extends ValueObject {
+public class IntervalTemperature extends ObjetValeur {
   private double minimale;
   private double maximale;
 

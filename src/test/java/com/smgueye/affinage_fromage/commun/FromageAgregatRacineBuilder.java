@@ -4,9 +4,11 @@ import com.smgueye.affinage_fromage.domain.*;
 import com.smgueye.affinage_fromage.domain.fromage.Fromage;
 import com.smgueye.affinage_fromage.domain.fromage.FromageId;
 import com.smgueye.affinage_fromage.domain.Famille;
+import com.smgueye.affinage_fromage.domain.soins.TypeDeSoinAffinage;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class FromageAgregatRacineBuilder {
@@ -47,10 +49,10 @@ public class FromageAgregatRacineBuilder {
       LocalDate.now(),
       new Famille("BLEU",
         new PlageAffinage(new IntervalTemperature(12, 15), new IntervalHumidite(90, 95)),
-        List.of(
-          SoinAffinage.PIQUAGE,
-          SoinAffinage.RETOURNEMENT,
-          SoinAffinage.CONTROLE_OLFACTIF)));
+        Set.of(
+          TypeDeSoinAffinage.PIQUAGE,
+          TypeDeSoinAffinage.RETOURNEMENT,
+          TypeDeSoinAffinage.CONTROLE_OLFACTIF)));
   }
 
   public static FromageAgregatRacineBuilder unFromageVide() {

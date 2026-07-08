@@ -1,10 +1,10 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
 import java.time.LocalDate;
 
-public class PeriodeDeMaturation extends ValueObject {
+public class PeriodeDeMaturation extends ObjetValeur {
   private LocalDate debut;
   private LocalDate fin;
 
@@ -27,11 +27,11 @@ public class PeriodeDeMaturation extends ValueObject {
     return fin;
   }
 
-  public boolean contient(PeriodeDeMaturation periodeDeMaturation) {
-    return !neContientPas(periodeDeMaturation);
+  public boolean chevauche(PeriodeDeMaturation periodeDeMaturation) {
+    return !neChevauchePas(periodeDeMaturation);
   }
 
-  public boolean neContientPas(PeriodeDeMaturation unePeriode) {
+  public boolean neChevauchePas(PeriodeDeMaturation unePeriode) {
     return debut().isAfter(unePeriode.fin()) || fin().isBefore(unePeriode.debut());
   }
 

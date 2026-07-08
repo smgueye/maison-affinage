@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
-public class PlageAffinage extends ValueObject {
+public class PlageAffinage extends ObjetValeur {
   private IntervalTemperature temperature;
   private IntervalHumidite humidite;
 

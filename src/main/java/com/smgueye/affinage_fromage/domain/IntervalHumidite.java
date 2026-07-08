@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
-public class IntervalHumidite extends ValueObject {
+public class IntervalHumidite extends ObjetValeur {
 
   private double minimum;
   private double maximum;

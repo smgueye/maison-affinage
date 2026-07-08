@@ -1,16 +1,17 @@
 package com.smgueye.affinage_fromage.domain;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
+import com.smgueye.affinage_fromage.domain.soins.TypeDeSoinAffinage;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-public class Famille extends ValueObject {
+public class Famille extends ObjetValeur {
   private String nom;
   private PlageAffinage plageAffinage;
-  private List<SoinAffinage> soinsObligatoires;
+  private Set<TypeDeSoinAffinage> soinsObligatoires;
 
-  public Famille(String nom, PlageAffinage plageAffinage, List<SoinAffinage> soinsObligatoires) {
+  public Famille(String nom, PlageAffinage plageAffinage, Set<TypeDeSoinAffinage> soinsObligatoires) {
     setNom(nom);
     setPlageAffinage(plageAffinage);
     setSoins(soinsObligatoires);
@@ -28,7 +29,7 @@ public class Famille extends ValueObject {
     return plageAffinage;
   }
 
-  public List<SoinAffinage> soinsObligatoires() {
+  public Set<TypeDeSoinAffinage> soinsObligatoires() {
     return soinsObligatoires;
   }
 
@@ -37,8 +38,8 @@ public class Famille extends ValueObject {
     this.nom = nom;
   }
   
-  private void setSoins(List<SoinAffinage> soinsObligatoires) {
-    this.verifieArgumentListEstNonNullNiVide(soinsObligatoires, "La liste des soins a promulger doit etre fournis.");
+  private void setSoins(Set<TypeDeSoinAffinage> soinsObligatoires) {
+    this.verifieArgumentEstNonNulOuVide(soinsObligatoires, "La liste des soins a promulger doit etre fournis.");
     this.soinsObligatoires = soinsObligatoires;
   }
 

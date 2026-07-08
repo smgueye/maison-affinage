@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.commun;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ValidationAssertive {
 
@@ -38,7 +38,7 @@ public class ValidationAssertive {
     }
   }
 
-  protected void verifieArgumentListEstNonNullNiVide(List uneListe, String unMessage) {
+  protected void verifieArgumentEstNonNulOuVide(Set uneListe, String unMessage) {
     if (Objects.isNull(uneListe) || uneListe.isEmpty()) {
       throw new IllegalArgumentException(unMessage);
     }

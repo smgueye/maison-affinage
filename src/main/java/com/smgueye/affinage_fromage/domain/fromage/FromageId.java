@@ -1,10 +1,10 @@
 package com.smgueye.affinage_fromage.domain.fromage;
 
-import com.smgueye.affinage_fromage.commun.ValueObject;
+import com.smgueye.affinage_fromage.commun.ObjetValeur;
 
 import java.util.UUID;
 
-public class FromageId extends ValueObject {
+public class FromageId extends ObjetValeur {
 
   private UUID id;
 

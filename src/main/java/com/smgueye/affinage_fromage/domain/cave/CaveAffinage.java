@@ -1,14 +1,13 @@
 package com.smgueye.affinage_fromage.domain.cave;
 
-import com.smgueye.affinage_fromage.commun.Entity;
+import com.smgueye.affinage_fromage.commun.Entite;
 import com.smgueye.affinage_fromage.domain.fromage.Fromage;
 import com.smgueye.affinage_fromage.domain.fromage.FromageId;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-public class CaveAffinage extends Entity {
+public class CaveAffinage extends Entite {
   private CaveAffinageId id;
   private int capaciteMaximale;
   private double temperatureCible;
