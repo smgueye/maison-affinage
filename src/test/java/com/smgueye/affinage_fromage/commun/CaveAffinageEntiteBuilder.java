@@ -1,7 +1,7 @@
 package com.smgueye.affinage_fromage.commun;
 
-import com.smgueye.affinage_fromage.domain.cave.CaveAffinage;
-import com.smgueye.affinage_fromage.domain.cave.CaveAffinageId;
+import com.smgueye.affinage_fromage.domain.model.cave.CaveAffinage;
+import com.smgueye.affinage_fromage.domain.model.cave.CaveAffinageId;
 
 import java.util.UUID;
 

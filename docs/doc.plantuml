@@ -1,0 +1,20 @@
+@startuml
+participant "Maison d'affinage" as Maison << ApplicationService >>
+participant "Placement en Cave" as Service << DomaineService >>
+participant "Cave d'affinage" as Cave << AggregateRoot >>
+participant "Fromage" as Fromage << RootEntity >>
+
+Maison -> Service : placerUnFromqge(fromageId : FromageId)
+Service -> Cave : placerUnFromage(fromageId : FromageId)
+Cave -> Cave : peutAccueillirUnFromage(fromageId : FromageId)
+note right : inv #1 - la capacite \ninv #2 - la compatibilite
+Cave -> Cave : reserverUnePlace(fromageId : FromageId)
+Cave --> Service : <<Fromage place>>
+
+Service -> Fromage : marquerCommeEtantEnMaturation(periodeDeMaturation : PeriodeDeMaturation)
+note right : inv #3 - La periode de maturation
+Fromage --> Fromage : marquerCommeEtantEnMaturation()
+Fromage --> Fromage : <<Fromage en Maturation>>
+Fromage --> Service : <<Fromage en Maturation>>
+Cave --> Maison : <<Fromage place>>
+@enduml

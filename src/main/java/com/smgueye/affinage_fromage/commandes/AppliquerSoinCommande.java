@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.commandes;
 
-import com.smgueye.affinage_fromage.domain.AffineurId;
-import com.smgueye.affinage_fromage.domain.fromage.FromageId;
-import com.smgueye.affinage_fromage.domain.soins.TypeDeSoinAffinage;
+import com.smgueye.affinage_fromage.domain.model.AffineurId;
+import com.smgueye.affinage_fromage.domain.model.fromage.FromageId;
+import com.smgueye.affinage_fromage.domain.model.soins.TypeDeSoinAffinage;
 import lombok.Getter;
 
 import java.time.LocalDate;
