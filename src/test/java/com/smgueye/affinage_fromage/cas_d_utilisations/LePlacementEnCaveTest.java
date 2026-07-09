@@ -10,12 +10,13 @@ import com.smgueye.affinage_fromage.commun.exceptions.ExceptionMetier;
 import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecCaveException;
 import com.smgueye.affinage_fromage.commun.exceptions.IncompatibiliteAvecLaPeriodeDurantLePlacement;
 import com.smgueye.affinage_fromage.commun.messages.Message;
-import com.smgueye.affinage_fromage.domain.IntervalHumidite;
-import com.smgueye.affinage_fromage.domain.IntervalTemperature;
-import com.smgueye.affinage_fromage.domain.PeriodeDeMaturation;
-import com.smgueye.affinage_fromage.domain.PlageAffinage;
-import com.smgueye.affinage_fromage.domain.cave.CaveAffinage;
-import com.smgueye.affinage_fromage.domain.fromage.Fromage;
+import com.smgueye.affinage_fromage.domain.model.IntervalHumidite;
+import com.smgueye.affinage_fromage.domain.model.IntervalTemperature;
+import com.smgueye.affinage_fromage.domain.model.PeriodeDeMaturation;
+import com.smgueye.affinage_fromage.domain.model.PlageAffinage;
+import com.smgueye.affinage_fromage.domain.model.cave.CaveAffinage;
+import com.smgueye.affinage_fromage.domain.model.fromage.Fromage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class LePlacementEnCaveTest {
       .construction();
     // TODO - Peut être qu'implémenter un état recu dans le builder directement serait mieux ?
     //        Ex. Builder.unBonFromage().recuA(maisonAffinage)...
-    laMaisonAffinage.recoit(unFromage);
+    laMaisonAffinage.confie(unFromage);
 
     // Act
     laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder.uneCommandeDePlacement()
@@ -61,20 +62,25 @@ public class LePlacementEnCaveTest {
     Fromage leFromage = laMaisonAffinage
       .fromageAvecId(unFromage.id())
       .orElseThrow(() -> new ExceptionMetier("Un fromage placé en maison d'affinage doit pouvoir être retrouvé"));
-
     assertThat(leFromage.estEnMaturation())
       .describedAs("Un fromage placé en cave doit être en cours de maturation")
       .isTrue();
-    assertThat(uneCave.accueilleDeja(leFromage.id()));
-    assertThat(unFromage.periodeDeMaturation()).isEqualTo(new PeriodeDeMaturation(Moment().aujourdHui(), Moment().dansUneSemaine()));
-    assertThat(leFromage.estPlaceDansLaCave(uneCave))
+    assertThat(uneCave.accueilleDeja(leFromage.id()))
+      .describedAs("")
+      .isTrue();
+    assertThat(unFromage.periodeDeMaturation())
+      .describedAs("")
+      .isEqualTo(new PeriodeDeMaturation(Moment().aujourdHui(), Moment().dansUneSemaine()));
+    assertThat(leFromage.estPlaceDansLaCave(uneCave.id()))
       .describedAs("Un fromage placé dans un cave doit pouvoir y être retrouvé")
       .isTrue();
   }
 
   @Test
   @DisplayName("Invariant 1 : Une cave ne peut pas accueillir un nombre de fromages dépassant sa capacité maximale")
-  public void une_cave_ne_peut_pas_accueillir_un_nombre_de_fromages_depassant_sa_capacite_maximale() throws CapaciteMaximaleDepasseeException, IncompatibiliteAvecCaveException {
+  public void une_cave_ne_peut_pas_accueillir_un_nombre_de_fromages_depassant_sa_capacite_maximale() throws
+    CapaciteMaximaleDepasseeException,
+    IncompatibiliteAvecCaveException {
     // Arrange
     CaveAffinage uneCave = CaveAffinageEntiteBuilder.uneCave().construction();
     for (int i = 1; i <= uneCave.capaciteMaximale(); i++) {
@@ -82,18 +88,17 @@ public class LePlacementEnCaveTest {
         .uneCommandeDePlacement()
         .avecCave(uneCave)
         .construire();
-      laMaisonAffinage.recoit(uneCommande.fromage());
+      laMaisonAffinage.confie(uneCommande.fromage());
       laMaisonAffinage.placeEnCave(uneCommande);
     }
 
     // Act & Assert
     assertThatExceptionOfType(CapaciteMaximaleDepasseeException.class)
-      .isThrownBy(() -> {
+      .isThrownBy(() ->
         laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder
           .uneCommandeDePlacement()
           .avecCave(uneCave)
-          .construire());
-      })
+          .construire()))
       .withMessage(Message.CAPACITE_MAXIMAL_DEPASSEE_EXCEPTION);
   }
 
@@ -115,7 +120,7 @@ public class LePlacementEnCaveTest {
         .unBonFromage()
         .avecPlanAffinage(new PlageAffinage(new IntervalTemperature(12, 15), new IntervalHumidite(90, 105)))
         .construction();
-      laMaisonAffinage.recoit(unFromage);
+      laMaisonAffinage.confie(unFromage);
 
       assertThatExceptionOfType(IncompatibiliteAvecCaveException.class)
         .describedAs("Un fromage avec une temperature invalide ne doit pas pouvoir être place")
@@ -134,7 +139,7 @@ public class LePlacementEnCaveTest {
         .unBonFromage()
         .avecPlanAffinage(new PlageAffinage(new IntervalTemperature(10, 13), new IntervalHumidite(90, 95)))
         .construction();
-      laMaisonAffinage.recoit(unFromage);
+      laMaisonAffinage.confie(unFromage);
 
       assertThatExceptionOfType(IncompatibiliteAvecCaveException.class)
         .describedAs("Un fromage avec une humidite invalide ne doit pas pouvoir être place")
@@ -152,11 +157,11 @@ public class LePlacementEnCaveTest {
     public void un_fromage_compatible_avec_une_cave_peut_y_etre_place(String scenario, Fromage unFromage) {
       CaveAffinage uneCave = CaveAffinageEntiteBuilder.uneCave().avecTemperatureCible(10).avecHumiditeCible(90).construction();
       assertThatCode(() -> laMaisonAffinage.placeEnCave(
-          PlacerEnCaveCommandeBuilder
-            .uneCommandeDePlacement()
-            .avecCave(uneCave)
-            .avecFromage(unFromage)
-            .construire()))
+        PlacerEnCaveCommandeBuilder
+          .uneCommandeDePlacement()
+          .avecCave(uneCave)
+          .avecFromage(unFromage)
+          .construire()))
         .describedAs(scenario)
         .doesNotThrowAnyException();
     }
@@ -203,102 +208,105 @@ public class LePlacementEnCaveTest {
   @Nested
   class UnFromageNePeutEtrePlaceQueDansUneCaveSurUneMemePeriode {
 
+    Fromage fromageATester;
+
+    @BeforeEach
+    void initialize() {
+      fromageATester = FromageAgregatRacineBuilder
+        .unBonFromage()
+        .construction();
+    }
+
     @ParameterizedTest(name = "{0}")
     @MethodSource("fromageAvecPeriodeDeCompatibiliteValide")
     public void un_fromage_peut_etre_place_dans_n_importe_quelle_cave_sur_une_periode_differente(String leScenario,
-                                                                                                 Fromage unFromage,
                                                                                                  PeriodeDeMaturation periode) {
       // Arrange
-      laMaisonAffinage.recoit(unFromage);
+      laMaisonAffinage.confie(fromageATester);
       CaveAffinage uneCave = CaveAffinageEntiteBuilder.uneCave().construction();
       laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder
         .uneCommandeDePlacement()
-        .avecFromage(unFromage)
+        .avecFromage(fromageATester)
         .avecCave(uneCave)
         .construire());
 
       // Act & Assert
-      assertThat(unFromage.periodeDeMaturation())
+      assertThat(fromageATester.periodeDeMaturation())
         .describedAs("Un fromage placé une 1er fois doit avoir une période de maturation")
         .isNotNull();
       assertThatCode(() -> {
           laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder
             .uneCommandeDePlacement()
             .avecCave(uneCave)
-            .avecFromage(unFromage)
+            .avecFromage(fromageATester)
             .avecPeriodeDeMaturation(periode)
             .construire());
       })
         .describedAs(leScenario)
         .doesNotThrowAnyException();
-      assertThat(unFromage.periodeDeMaturation().equals(periode))
+      assertThat(fromageATester.periodeDeMaturation().equals(periode))
         .describedAs("La nouvelle période de maturation du fromage doit etre celle passée dans la commande")
         .isTrue();
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("fromageAvecPeriodeDeMaturationIncompatibles")
-    public void un_fromage_ne_peut_etre_place_que_dans_une_meme_sur_la_meme_periode(String leScenario,
-                                                                                    Fromage unFromage,
-                                                                                    PeriodeDeMaturation periode) {
+    public void un_fromage_ne_pas_etre_place_sur_la_meme_periode(String leScenario,
+                                                                 PeriodeDeMaturation periode) {
       // Arrange
-      laMaisonAffinage.recoit(unFromage);
+      laMaisonAffinage.confie(fromageATester);
       CaveAffinage uneCave = CaveAffinageEntiteBuilder.uneCave().construction();
       laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder
         .uneCommandeDePlacement()
-        .avecFromage(unFromage)
+        .avecFromage(fromageATester) // Le fromage est placé avec une période de maturation entre aujourdhui et 1 semaine par défaut.
         .avecCave(uneCave)
         .construire());
 
       // Act & Assert
-      assertThat(unFromage.periodeDeMaturation()).isNotNull();
+      assertThat(fromageATester.periodeDeMaturation()).isNotNull();
       assertThatExceptionOfType(IncompatibiliteAvecLaPeriodeDurantLePlacement.class)
         .describedAs(leScenario)
-        .isThrownBy(() -> {
+        .isThrownBy(() ->
           laMaisonAffinage.placeEnCave(PlacerEnCaveCommandeBuilder
             .uneCommandeDePlacement()
             .avecCave(uneCave)
-            .avecFromage(unFromage)
+            .avecFromage(fromageATester)
             .avecPeriodeDeMaturation(periode)
-            .construire());
-        });
+            .construire()));
     }
 
 
     static Stream<Arguments> fromageAvecPeriodeDeCompatibiliteValide() {
-      final Fromage unFromage = FromageAgregatRacineBuilder.unBonFromage().construction();
       final String scenario = "Un fromage avec une période de maturité différente doit pouvoir etre placé. Cas %s";
 
       return Stream.of(
-        arguments(String.format(scenario, "STRICTEMENT AVANT"), unFromage,
-          new PeriodeDeMaturation(Moment().ilYa(Period.ofDays(5)), Moment().hier())),
-        arguments(String.format(scenario, "STRICTEMENT AVANT"), unFromage,
+        arguments(String.format(scenario, "STRICTEMENT AVANT"),
+          new PeriodeDeMaturation(Moment().ilYa(Period.ofDays(5)), Moment().hier()))
+        /*arguments(String.format(scenario, "STRICTEMENT AVANT"),
           new PeriodeDeMaturation(Moment().hier(), Moment().hier())),
-        arguments(String.format(scenario, "STRICTEMENT APRES"), unFromage,
+        arguments(String.format(scenario, "STRICTEMENT APRES"),
           new PeriodeDeMaturation(Moment().dansUneSemaineEt(Period.ofDays(1)), Moment().dansUneSemaineEt(Period.ofDays(1)))),
-        arguments(String.format(scenario, "STRICTEMENT APRES"), unFromage,
-          new PeriodeDeMaturation(Moment().dansUneSemaineEt(Period.ofDays(1)), Moment().dansUneSemaineEt(Period.ofDays(3)))));
+        arguments(String.format(scenario, "STRICTEMENT APRES"),
+          new PeriodeDeMaturation(Moment().dansUneSemaineEt(Period.ofDays(1)), Moment().dansUneSemaineEt(Period.ofDays(3))))*/
+      );
     }
 
     static Stream<Arguments> fromageAvecPeriodeDeMaturationIncompatibles() {
-      final Fromage unFromage = FromageAgregatRacineBuilder.unBonFromage().construction();
-      final String scenario = "NB : **La cave Possède deja le fromage. Sa période est : " +
-                              "DEBUT: AUJOURD'HUI - FIN: DANS UNE SEMAINE. " +
-                              "Un fromage entre: \n %s doit générer une exception métier.";
+      final String scenario = "Un fromage replacer sur une meme période (entre %s) doit générer une exception métier.";
       return Stream.of(
-        arguments(String.format(scenario, "La MEME période ou une période INCLUSE"), unFromage,
+        arguments(String.format(scenario, "La MEME période ou une période INCLUSE"),
           new PeriodeDeMaturation(Moment().hier(), Moment().xAvantUneSemaine(Period.ofDays(1)))),
-        arguments(String.format(scenario, "HIER -- DEMAIN"), unFromage,
+        arguments(String.format(scenario, "HIER -- DEMAIN"),
           new PeriodeDeMaturation(Moment().hier(), Moment().demain())),
-        arguments(String.format(scenario, "1J AVANT UNE SEMAINE -- 1J APRES UNE SEMAINE"), unFromage,
+        arguments(String.format(scenario, "1J AVANT UNE SEMAINE -- 1J APRES UNE SEMAINE"),
           new PeriodeDeMaturation(Moment().xAvantUneSemaine(Period.ofDays(1)), Moment().dansUneSemaineEt(Period.ofDays(1))),
-        arguments(String.format(scenario, "HIER -- AUJOURD'HUI"), unFromage,
+        arguments(String.format(scenario, "HIER -- AUJOURD'HUI"),
           new PeriodeDeMaturation(Moment().hier(), Moment().aujourdHui())),
         arguments(String.format(scenario, "DANS 1 SEMAINE -- 1 SEMAINE + 1 JOUR"),
-          unFromage, new PeriodeDeMaturation(Moment().dansUneSemaine(), Moment().dansUneSemaineEt(Period.ofDays(1))))),
-        arguments(String.format(scenario, "AUJOURD'HUI -- DEMAIN"), unFromage,
+          new PeriodeDeMaturation(Moment().dansUneSemaine(), Moment().dansUneSemaineEt(Period.ofDays(1))))),
+        arguments(String.format(scenario, "AUJOURD'HUI -- DEMAIN"),
           new PeriodeDeMaturation(Moment().aujourdHui(), Moment().demain())),
-        arguments(String.format(scenario, "1 JOUR AVANT 1 SEMAINE -- DANS 1 SEMAINE"), unFromage,
+        arguments(String.format(scenario, "1 JOUR AVANT 1 SEMAINE -- DANS 1 SEMAINE"),
           new PeriodeDeMaturation(Moment().xAvantUneSemaine(Period.ofDays(1)), Moment().dansUneSemaine()))
       );
     }

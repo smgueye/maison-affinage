@@ -1,13 +1,11 @@
 package com.smgueye.affinage_fromage.commun;
 
-import com.smgueye.affinage_fromage.domain.*;
-import com.smgueye.affinage_fromage.domain.fromage.Fromage;
-import com.smgueye.affinage_fromage.domain.fromage.FromageId;
-import com.smgueye.affinage_fromage.domain.Famille;
-import com.smgueye.affinage_fromage.domain.soins.TypeDeSoinAffinage;
+import com.smgueye.affinage_fromage.domain.model.*;
+import com.smgueye.affinage_fromage.domain.model.fromage.Fromage;
+import com.smgueye.affinage_fromage.domain.model.fromage.FromageId;
+import com.smgueye.affinage_fromage.domain.model.soins.TypeDeSoinAffinage;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

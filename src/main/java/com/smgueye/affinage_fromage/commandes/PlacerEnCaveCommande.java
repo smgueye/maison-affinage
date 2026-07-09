@@ -1,8 +1,8 @@
 package com.smgueye.affinage_fromage.commandes;
 
-import com.smgueye.affinage_fromage.domain.PeriodeDeMaturation;
-import com.smgueye.affinage_fromage.domain.cave.CaveAffinage;
-import com.smgueye.affinage_fromage.domain.fromage.Fromage;
+import com.smgueye.affinage_fromage.domain.model.PeriodeDeMaturation;
+import com.smgueye.affinage_fromage.domain.model.cave.CaveAffinage;
+import com.smgueye.affinage_fromage.domain.model.fromage.Fromage;
 
 public class PlacerEnCaveCommande {
 

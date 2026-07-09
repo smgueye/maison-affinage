@@ -40,33 +40,66 @@ EtatEnMaturation --> [*]
 
 ```plantuml
 @startuml
-Client -> Fromage : placerEnCave(CaveAffinage cave)
+participant "Maison d'affinage" as Maison << ApplicationService >> 
+participant "Placement en Cave" as Service << DomaineService >> 
+participant "Cave d'affinage" as Cave << AggregateRoot >> 
+participant "Fromage" as Fromage << RootEntity >> 
 
-activate Fromage
-    Fromage -> CaveAffinage : placerEnCave(Fromage f, PeriodeDeMaturation p)
-    activate CaveAffinage
-    
-        CaveAffinage --> CaveAffinage : estCompatible(Fromage fromage)
-        activate CaveAffinage
-            alt cas echeant
-                CaveAffinage -> CaveAffinage : placerEnCave(Fromage fromage)
-                CaveAffinage --> Fromage : Fromage en maturation
-            else
-                CaveAffinage --> Fromage : Exception metier
-                note right : Lever une exc metier
-            end
-        deactivate CaveAffinage
+Maison -> Service : placerUnFromqge(fromageId : FromageId)
+Service -> Cave : placerUnFromage(fromageId : FromageId)
+Cave -> Cave : peutAccueillirUnFromage(fromage: Fromage)
+note right : inv #1 - la capacite \ninv #2 - la compatibilite 
+Cave -> Cave : reserverUnePlace(fromageId : FromageId)
+Cave --> Service : <<Fromage place>>
 
-    deactivate CaveAffinage
-    Fromage --> Client
-
-deactivate Fromage
+Service -> Fromage : marquerCommeEtantEnMaturation(periodeDeMaturation : PeriodeDeMaturation)
+note right : inv #3 - La periode de maturation 
+Fromage --> Fromage : marquerCommeEtantEnMaturation()
+Fromage --> Fromage : <<Fromage en Maturation>> 
+Fromage --> Service : <<Fromage en Maturation>> 
+Cave --> Maison : <<Fromage place>>
 @enduml
 ```
 
 
 ## Le modèle
 
+### v1.09082026
+
+```plantuml
+class CaveAffinageId <<ValueObject>> {
+-id: UUID
+}
+
+class FromageId <<ValueObject>> {
+-id: UUID
+}
+
+class Fromage <<RootAggregate>> {
++marquerEnMaturation(periode : PeriodeDeMaturation) : void
+-verifierLePlacementSurLaPeriode(periode: PeriodeDeMaturation) : void
+}
+
+class CaveAffinage <<RootAggregate>> {
++placerUnFromage(fromageId: FromageId) : void
+-peutAccueillirUnFromage(fromageId: FromageId) : void
+-verifierLaCapacite(fromageId: FromageId): void
+-verifierLaCompatibiliteAvecFromage(plageAffinage: PlageAffinage)
+-reserverUnePlace(fromageId: FromageId) : void
+}
+
+class PlacementEnCave <<DomaineService>> {
++placerUnFromage(\n  fromage: Fromage,\n  cave: CaveAffinage, \n  periode: PeriodeDeMaturation) : void;
+}
+
+Fromage --> FromageId
+CaveAffinage -> CaveAffinageId
+Fromage --> CaveAffinage
+PlacementEnCave --> CaveAffinage
+PlacementEnCave --> Fromage
+```
+
+### v1.0000000
 ```plantuml
 class CaveAffinageId <<ValueObject>> {
     -id: UUID
